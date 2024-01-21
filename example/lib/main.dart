@@ -1,7 +1,11 @@
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  initializeDateFormatting();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -28,15 +32,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Time _time = Time(hour: 11, minute: 30, second: 20);
-  bool iosStyle = true;
-
-  void onTimeChanged(Time newTime) {
-    setState(() {
-      _time = newTime;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +45,6 @@ class _HomeState extends State<Home> {
                   "Popup Picker Style",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                Text(
-                  "${_time.hour}:${_time.minute}:${_time.second} ${_time.period.name}"
-                      .toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
                 const SizedBox(height: 10),
                 TextButton(
                   style: TextButton.styleFrom(
@@ -64,11 +53,11 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     Navigator.of(context).push(
                       showPicker(
-                        showSecondSelector: true,
+                        isArabic: true,
                         context: context,
-                        value: _time,
-                        onChange: onTimeChanged,
-                        minuteInterval: TimePickerInterval.FIVE,
+                        value: Time.fromTimeOfDay(TimeOfDay.now(), null),
+                        onChange: (p0) {},
+                        minuteInterval: TimePickerInterval.ONE,
                         // Optional onChange to receive value as DateTime
                         onChangeDateTime: (DateTime dateTime) {
                           // print(dateTime);
@@ -93,26 +82,20 @@ class _HomeState extends State<Home> {
                 showPicker(
                   isInlinePicker: true,
                   elevation: 1,
-                  value: _time,
-                  onChange: onTimeChanged,
-                  minuteInterval: TimePickerInterval.FIVE,
-                  iosStylePicker: iosStyle,
-                  minHour: 9,
-                  maxHour: 21,
                   is24HrFormat: false,
-                ),
-                Text(
-                  "IOS Style",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                Switch(
-                  value: iosStyle,
-                  onChanged: (newVal) {
-                    setState(() {
-                      iosStyle = newVal;
-                    });
+                  isArabic: true,
+                  context: context,
+                  value: Time.fromTimeOfDay(TimeOfDay.now(), null),
+                  onChange: (p0) {},
+                  minuteInterval: TimePickerInterval.ONE,
+                  // Optional onChange to receive value as DateTime
+                  onChangeDateTime: (DateTime dateTime) {
+                    // print(dateTime);
+                    debugPrint("[debug datetime]:  $dateTime");
                   },
-                )
+                  okText: "حسناً",
+                  cancelText: "اٍلغاء",
+                ),
               ],
             ),
           ),

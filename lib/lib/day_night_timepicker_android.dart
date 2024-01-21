@@ -9,6 +9,7 @@ import 'package:day_night_time_picker/lib/daynight_banner.dart';
 import 'package:day_night_time_picker/lib/state/state_container.dart';
 import 'package:day_night_time_picker/lib/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as dt;
 
 /// Private class. [StatefulWidget] that renders the content of the picker.
 // ignore: must_be_immutable
@@ -18,10 +19,12 @@ class DayNightTimePickerAndroid extends StatefulWidget {
     required this.sunrise,
     required this.sunset,
     required this.duskSpanInMinutes,
+    required this.isArabic,
   }) : super(key: key);
   final TimeOfDay sunrise;
   final TimeOfDay sunset;
   final int duskSpanInMinutes;
+  final bool isArabic;
 
   @override
   DayNightTimePickerAndroidState createState() =>
@@ -55,9 +58,6 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
         ? timeState.time.hour
         : timeState.time.hourOfPeriod;
 
-    final ltrMode =
-        timeState.widget.ltrMode ? TextDirection.ltr : TextDirection.rtl;
-
     final hideButtons = timeState.widget.hideButtons;
 
     Orientation currentOrientation = MediaQuery.of(context).orientation;
@@ -68,6 +68,8 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
     } else if (timeState.selected == SelectedInput.SECOND) {
       value = timeState.time.second.roundToDouble();
     }
+
+    final now = DateTime.now();
 
     return Center(
       child: SingleChildScrollView(
@@ -90,10 +92,9 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const AmPm(),
+                      AmPm(isArabic: widget.isArabic),
                       Expanded(
                         child: Row(
-                          textDirection: ltrMode,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             DisplayValue(
@@ -104,7 +105,19 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                         SelectedInput.HOUR,
                                       );
                                     },
-                              value: hourValue.toString().padLeft(2, '0'),
+                              value:
+                                  dt.DateFormat.H(widget.isArabic ? 'ar' : 'en')
+                                      .format(
+                                DateTime(
+                                  now.year,
+                                  now.month,
+                                  now.day,
+                                  hourValue,
+                                  timeState.time.minute,
+                                  timeState.time.second,
+                                ),
+                              ),
+                              // value: hourValue.toString().padLeft(2, '0'),
                               isSelected:
                                   timeState.selected == SelectedInput.HOUR,
                             ),
@@ -119,9 +132,21 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                         SelectedInput.MINUTE,
                                       );
                                     },
-                              value: timeState.time.minute
-                                  .toString()
-                                  .padLeft(2, '0'),
+                              value:
+                                  dt.DateFormat.m(widget.isArabic ? 'ar' : 'en')
+                                      .format(
+                                DateTime(
+                                  now.year,
+                                  now.month,
+                                  now.day,
+                                  hourValue,
+                                  timeState.time.minute,
+                                  timeState.time.second,
+                                ),
+                              ),
+                              // value: timeState.time.minute
+                              //     .toString()
+                              //     .padLeft(2, '0'),
                               isSelected:
                                   timeState.selected == SelectedInput.MINUTE,
                             ),
@@ -136,43 +161,61 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                                           SelectedInput.SECOND,
                                         );
                                       },
-                                      value: timeState.time.second
-                                          .toString()
-                                          .padLeft(2, '0'),
+                                      value: dt.DateFormat.s(
+                                              widget.isArabic ? 'ar' : 'en')
+                                          .format(
+                                        DateTime(
+                                          now.year,
+                                          now.month,
+                                          now.day,
+                                          hourValue,
+                                          timeState.time.minute,
+                                          timeState.time.second,
+                                        ),
+                                      ),
+                                      // value: timeState.time.second
+                                      //     .toString()
+                                      //     .padLeft(2, '0'),
                                       isSelected: timeState.selected ==
                                           SelectedInput.SECOND,
                                     ),
                                   ]
-                                : []
+                                : [],
                           ],
                         ),
                       ),
-                      Slider(
-                        onChangeEnd: (value) {
-                          if (!timeState.widget.disableAutoFocusToNextInput) {
-                            if (timeState.selected == SelectedInput.HOUR) {
-                              timeState
-                                  .onSelectedInputChange(SelectedInput.MINUTE);
-                            } else if (timeState.selected ==
-                                    SelectedInput.MINUTE &&
-                                timeState.widget.showSecondSelector) {
-                              timeState
-                                  .onSelectedInputChange(SelectedInput.SECOND);
+                      Directionality(
+                        textDirection: widget.isArabic
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                        child: Slider(
+                          onChangeEnd: (value) {
+                            if (!timeState.widget.disableAutoFocusToNextInput) {
+                              if (timeState.selected == SelectedInput.HOUR) {
+                                timeState.onSelectedInputChange(
+                                    SelectedInput.MINUTE);
+                              } else if (timeState.selected ==
+                                      SelectedInput.MINUTE &&
+                                  timeState.widget.showSecondSelector) {
+                                timeState.onSelectedInputChange(
+                                    SelectedInput.SECOND);
+                              }
                             }
-                          }
-                          if (timeState.widget.isOnValueChangeMode) {
-                            timeState.onOk();
-                          }
-                        },
-                        value: value,
-                        onChanged: timeState.onTimeChange,
-                        min: min,
-                        max: max,
-                        divisions: divisions,
-                        activeColor: color,
-                        inactiveColor: color.withAlpha(55),
+                            if (timeState.widget.isOnValueChangeMode) {
+                              timeState.onOk();
+                            }
+                          },
+                          value: value,
+                          onChanged: timeState.onTimeChange,
+                          min: min,
+                          max: max,
+                          divisions: divisions,
+                          activeColor: color,
+                          inactiveColor: color.withAlpha(55),
+                        ),
                       ),
-                      if (!hideButtons) const ActionButtons(),
+                      if (!hideButtons)
+                        ActionButtons(isArabic: widget.isArabic),
                     ],
                   ),
                 ),

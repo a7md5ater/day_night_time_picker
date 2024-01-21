@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 /// Render the [Ok] and [Cancel] buttons
 class ActionButtons extends StatelessWidget {
-  const ActionButtons({Key? key}) : super(key: key);
+  final bool isArabic;
+  const ActionButtons({Key? key, required this.isArabic}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class ActionButtons extends StatelessWidget {
       return Expanded(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
+          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
           children: <Widget>[
             TextButton(
               onPressed: timeState.onOk,
@@ -41,6 +43,7 @@ class ActionButtons extends StatelessWidget {
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
+        textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
         children: <Widget>[
           TextButton(
             style: (timeState.widget.cancelButtonStyle ??

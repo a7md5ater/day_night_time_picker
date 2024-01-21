@@ -1,6 +1,5 @@
 import 'package:day_night_time_picker/lib/constants.dart';
 import 'package:day_night_time_picker/lib/day_night_timepicker_android.dart';
-import 'package:day_night_time_picker/lib/day_night_timepicker_ios.dart';
 import 'package:day_night_time_picker/lib/state/state_container.dart';
 import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
@@ -113,14 +112,13 @@ dynamic showPicker({
   Image? sunAsset,
   Image? moonAsset,
   bool blurredBackground = false,
-  bool ltrMode = true,
+  bool isArabic = false,
   Color barrierColor = Colors.black45,
   double? borderRadius,
   double? elevation,
   EdgeInsets? dialogInsetPadding =
       const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
   bool barrierDismissible = true,
-  bool iosStylePicker = false,
   bool displayHeader = true,
   String hourLabel = 'hours',
   String minuteLabel = 'minutes',
@@ -161,11 +159,6 @@ dynamic showPicker({
   if (maxHour == double.infinity) {
     maxHour = 23;
   }
-
-  if (iosStylePicker) {
-    width = 350;
-  }
-
   assert(
     !(disableHour == true && disableMinute == true),
     'Both "disableMinute" and "disableHour" cannot be true.',
@@ -221,7 +214,6 @@ dynamic showPicker({
         hourLabel: hourLabel,
         minuteLabel: minuteLabel,
         secondLabel: secondLabel,
-        ltrMode: ltrMode,
         disableAutoFocusToNextInput: disableAutoFocusToNextInput,
         width: width,
         height: height,
@@ -240,33 +232,19 @@ dynamic showPicker({
     return timeModelBinding(
       Builder(
         builder: (context) {
-          if (iosStylePicker) {
-            return Builder(
-              builder: (context) {
-                return Theme(
-                  data: themeData ?? Theme.of(context),
-                  child: DayNightTimePickerIos(
-                    sunrise: sunrise,
-                    sunset: sunset,
-                    duskSpanInMinutes: duskSpanInMinutes,
-                  ),
-                );
-              },
-            );
-          } else {
-            return Builder(
-              builder: (context) {
-                return Theme(
-                  data: themeData ?? Theme.of(context),
-                  child: DayNightTimePickerAndroid(
-                    sunrise: sunrise,
-                    sunset: sunset,
-                    duskSpanInMinutes: duskSpanInMinutes,
-                  ),
-                );
-              },
-            );
-          }
+          return Builder(
+            builder: (context) {
+              return Theme(
+                data: themeData ?? Theme.of(context),
+                child: DayNightTimePickerAndroid(
+                  sunrise: sunrise,
+                  sunset: sunset,
+                  duskSpanInMinutes: duskSpanInMinutes,
+                  isArabic: isArabic,
+                ),
+              );
+            },
+          );
         },
       ),
     );
@@ -274,25 +252,15 @@ dynamic showPicker({
 
   return PageRouteBuilder(
     pageBuilder: (context, _, __) {
-      if (iosStylePicker) {
-        return Theme(
-          data: themeData ?? Theme.of(context),
-          child: DayNightTimePickerIos(
-            sunrise: sunrise,
-            sunset: sunset,
-            duskSpanInMinutes: duskSpanInMinutes,
-          ),
-        );
-      } else {
-        return Theme(
-          data: themeData ?? Theme.of(context),
-          child: DayNightTimePickerAndroid(
-            sunrise: sunrise,
-            sunset: sunset,
-            duskSpanInMinutes: duskSpanInMinutes,
-          ),
-        );
-      }
+      return Theme(
+        data: themeData ?? Theme.of(context),
+        child: DayNightTimePickerAndroid(
+          sunrise: sunrise,
+          sunset: sunset,
+          duskSpanInMinutes: duskSpanInMinutes,
+          isArabic: isArabic,
+        ),
+      );
     },
     transitionDuration: const Duration(milliseconds: 200),
     transitionsBuilder: (context, anim, secondAnim, child) => SlideTransition(
