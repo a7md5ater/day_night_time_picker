@@ -96,6 +96,7 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                       Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          textDirection: TextDirection.ltr,
                           children: <Widget>[
                             DisplayValue(
                               onTap: timeState.widget.disableHour!
