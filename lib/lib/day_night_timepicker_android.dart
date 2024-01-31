@@ -94,95 +94,97 @@ class DayNightTimePickerAndroidState extends State<DayNightTimePickerAndroid> {
                     children: <Widget>[
                       AmPm(isArabic: widget.isArabic),
                       Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Directionality(
                           textDirection: TextDirection.ltr,
-                          children: <Widget>[
-                            DisplayValue(
-                              onTap: timeState.widget.disableHour!
-                                  ? null
-                                  : () {
-                                      timeState.onSelectedInputChange(
-                                        SelectedInput.HOUR,
-                                      );
-                                    },
-                              value:
-                                  dt.DateFormat.H(widget.isArabic ? 'ar' : 'en')
-                                      .format(
-                                DateTime(
-                                  now.year,
-                                  now.month,
-                                  now.day,
-                                  hourValue,
-                                  timeState.time.minute,
-                                  timeState.time.second,
-                                ),
-                              ),
-                              // value: hourValue.toString().padLeft(2, '0'),
-                              isSelected:
-                                  timeState.selected == SelectedInput.HOUR,
-                            ),
-                            const DisplayValue(
-                              value: ':',
-                            ),
-                            DisplayValue(
-                              onTap: timeState.widget.disableMinute!
-                                  ? null
-                                  : () {
-                                      timeState.onSelectedInputChange(
-                                        SelectedInput.MINUTE,
-                                      );
-                                    },
-                              value:
-                                  dt.DateFormat.m(widget.isArabic ? 'ar' : 'en')
-                                      .format(
-                                DateTime(
-                                  now.year,
-                                  now.month,
-                                  now.day,
-                                  hourValue,
-                                  timeState.time.minute,
-                                  timeState.time.second,
-                                ),
-                              ),
-                              // value: timeState.time.minute
-                              //     .toString()
-                              //     .padLeft(2, '0'),
-                              isSelected:
-                                  timeState.selected == SelectedInput.MINUTE,
-                            ),
-                            ...timeState.widget.showSecondSelector
-                                ? [
-                                    const DisplayValue(
-                                      value: ':',
-                                    ),
-                                    DisplayValue(
-                                      onTap: () {
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              DisplayValue(
+                                onTap: timeState.widget.disableHour!
+                                    ? null
+                                    : () {
                                         timeState.onSelectedInputChange(
-                                          SelectedInput.SECOND,
+                                          SelectedInput.HOUR,
                                         );
                                       },
-                                      value: dt.DateFormat.s(
-                                              widget.isArabic ? 'ar' : 'en')
-                                          .format(
-                                        DateTime(
-                                          now.year,
-                                          now.month,
-                                          now.day,
-                                          hourValue,
-                                          timeState.time.minute,
-                                          timeState.time.second,
-                                        ),
+                                value: dt.DateFormat.H(
+                                        widget.isArabic ? 'ar' : 'en')
+                                    .format(
+                                  DateTime(
+                                    now.year,
+                                    now.month,
+                                    now.day,
+                                    hourValue,
+                                    timeState.time.minute,
+                                    timeState.time.second,
+                                  ),
+                                ),
+                                // value: hourValue.toString().padLeft(2, '0'),
+                                isSelected:
+                                    timeState.selected == SelectedInput.HOUR,
+                              ),
+                              const DisplayValue(
+                                value: ':',
+                              ),
+                              DisplayValue(
+                                onTap: timeState.widget.disableMinute!
+                                    ? null
+                                    : () {
+                                        timeState.onSelectedInputChange(
+                                          SelectedInput.MINUTE,
+                                        );
+                                      },
+                                value: dt.DateFormat.m(
+                                        widget.isArabic ? 'ar' : 'en')
+                                    .format(
+                                  DateTime(
+                                    now.year,
+                                    now.month,
+                                    now.day,
+                                    hourValue,
+                                    timeState.time.minute,
+                                    timeState.time.second,
+                                  ),
+                                ),
+                                // value: timeState.time.minute
+                                //     .toString()
+                                //     .padLeft(2, '0'),
+                                isSelected:
+                                    timeState.selected == SelectedInput.MINUTE,
+                              ),
+                              ...timeState.widget.showSecondSelector
+                                  ? [
+                                      const DisplayValue(
+                                        value: ':',
                                       ),
-                                      // value: timeState.time.second
-                                      //     .toString()
-                                      //     .padLeft(2, '0'),
-                                      isSelected: timeState.selected ==
-                                          SelectedInput.SECOND,
-                                    ),
-                                  ]
-                                : [],
-                          ],
+                                      DisplayValue(
+                                        onTap: () {
+                                          timeState.onSelectedInputChange(
+                                            SelectedInput.SECOND,
+                                          );
+                                        },
+                                        value: dt.DateFormat.s(
+                                                widget.isArabic ? 'ar' : 'en')
+                                            .format(
+                                          DateTime(
+                                            now.year,
+                                            now.month,
+                                            now.day,
+                                            hourValue,
+                                            timeState.time.minute,
+                                            timeState.time.second,
+                                          ),
+                                        ),
+                                        // value: timeState.time.second
+                                        //     .toString()
+                                        //     .padLeft(2, '0'),
+                                        isSelected: timeState.selected ==
+                                            SelectedInput.SECOND,
+                                      ),
+                                    ]
+                                  : [],
+                            ],
+                          ),
                         ),
                       ),
                       Directionality(
